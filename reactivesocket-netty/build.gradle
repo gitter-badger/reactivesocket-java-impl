@@ -1,6 +1,7 @@
 dependencies {
-    compile 'io.netty:netty-handler:4.1.0.CR7'
-    compile 'io.netty:netty-codec-http:4.1.0.CR7'
+    compile 'io.netty:netty-handler:4.1.0.Final'
+    compile 'io.netty:netty-codec-http:4.1.0.Final'
+    compile 'io.netty:netty-transport-udt:4.1.0.Final'
     testCompile project(':reactivesocket-test')
 }
 
