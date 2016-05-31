@@ -27,8 +27,8 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class TestUtil
 {
@@ -129,15 +129,12 @@ public class TestUtil
         }
     }
 
-    public static <T> T toSingleBlocking(Publisher<T> source) {
-        return toListBlocking(source).get(0);
+    public static <T> CompletableFuture<T> toSingleFuture(Publisher<T> source) {
+        return toFuture(source).thenApply(list -> list.get(0));
     }
 
-    public static <T> List<T> toListBlocking(Publisher<T> source) {
-        CountDownLatch latch = new CountDownLatch(1);
-        AtomicReference<List<T>> ref = new AtomicReference<>();
-        AtomicReference<Throwable> throwable = new AtomicReference<>();
-
+    public static <T> CompletableFuture<List<T>> toFuture(Publisher<T> source) {
+        CompletableFuture<List<T>> future = new CompletableFuture<>();
         source.subscribe(new Subscriber<T>() {
             private List<T> buffer = new ArrayList<T>();
 
@@ -153,36 +150,14 @@ public class TestUtil
 
             @Override
             public void onError(Throwable t) {
-                throwable.set(t);
-                latch.countDown();
+                future.completeExceptionally(t);
             }
 
             @Override
             public void onComplete() {
-                ref.set(buffer);
-                latch.countDown();
+                future.complete(buffer);
             }
         });
-
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        List<T> values = ref.get();
-        Throwable t = throwable.get();
-
-        if (values == null) {
-            RuntimeException r;
-            if (t != null) {
-                r = new RuntimeException(t);
-            } else {
-                r = new RuntimeException();
-            }
-            throw r;
-        } else {
-            return ref.get();
-        }
+        return future;
     }
 }

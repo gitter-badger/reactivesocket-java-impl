@@ -32,7 +32,7 @@ import rx.observers.TestSubscriber;
 
 import java.util.concurrent.TimeUnit;
 
-import static io.reactivesocket.local.TestUtil.toSingleBlocking;
+import static io.reactivesocket.test.TestUtil.toSingleFuture;
 
 public class ClientServerTest {
 
@@ -93,10 +93,10 @@ public class ClientServerTest {
                 };
             }
         });
-        server = toSingleBlocking(LocalServerReactiveSocketConnector.INSTANCE.connect(serverConfig));
+        server = toSingleFuture(LocalServerReactiveSocketConnector.INSTANCE.connect(serverConfig)).get(5, TimeUnit.SECONDS);
 
         LocalClientReactiveSocketConnector.Config clientConfig = new LocalClientReactiveSocketConnector.Config("test", "text", "text");
-        client = toSingleBlocking(LocalClientReactiveSocketConnector.INSTANCE.connect(clientConfig));
+        client = toSingleFuture(LocalClientReactiveSocketConnector.INSTANCE.connect(clientConfig)).get(5, TimeUnit.SECONDS);;
     }
 
     @Test
