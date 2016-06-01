@@ -10,7 +10,6 @@ subprojects {
     apply plugin: 'java'
 
     repositories {
-        mavenLocal()
         maven { url 'https://dl.bintray.com/reactivesocket/ReactiveSocket' }
     }
 
