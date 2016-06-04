@@ -125,14 +125,13 @@ public class ClientTcpDuplexConnection implements DuplexConnection {
             @Override
             public void onError(Throwable t) {
                 callback.error(t);
-                if (t instanceof TransportException) {
-                    subscription.cancel();
-                }
+                subscription.cancel();
             }
 
             @Override
             public void onComplete() {
                 callback.success();
+                subscription.cancel();
             }
         });
     }
