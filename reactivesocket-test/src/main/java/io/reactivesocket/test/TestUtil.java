@@ -128,36 +128,4 @@ public class TestUtil
             return metadata;
         }
     }
-
-    public static <T> CompletableFuture<T> toSingleFuture(Publisher<T> source) {
-        return toFuture(source).thenApply(list -> list.get(0));
-    }
-
-    public static <T> CompletableFuture<List<T>> toFuture(Publisher<T> source) {
-        CompletableFuture<List<T>> future = new CompletableFuture<>();
-        source.subscribe(new Subscriber<T>() {
-            private List<T> buffer = new ArrayList<T>();
-
-            @Override
-            public void onSubscribe(Subscription s) {
-                s.request(Long.MAX_VALUE);
-            }
-
-            @Override
-            public void onNext(T t) {
-                buffer.add(t);
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                future.completeExceptionally(t);
-            }
-
-            @Override
-            public void onComplete() {
-                future.complete(buffer);
-            }
-        });
-        return future;
-    }
 }
