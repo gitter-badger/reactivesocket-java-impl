@@ -1,5 +1,7 @@
 # ReactiveSocket Java Implementations
 
+[![Join the chat at https://gitter.im/ReactiveSocket/reactivesocket-java-impl](https://badges.gitter.im/ReactiveSocket/reactivesocket-java-impl.svg)](https://gitter.im/ReactiveSocket/reactivesocket-java-impl?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Java implementations.
 
 ## Master Build Status
